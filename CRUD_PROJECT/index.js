@@ -1,7 +1,9 @@
 const express = require("express");
 const Todo = require("./models/todd")
+const connectDb = require("./dbContext/mongodb")
 const app = express();
 app.use(express.json());
+
 
 
 var todos = [
@@ -10,17 +12,13 @@ var todos = [
     new Todo(3,"Make new video on Flutter","Make new video on Flutter"),
 ];
 
-
-
 app.get('/',(req,res)=>{
     res.json("Welcome TO NODE JS CRUD VIDEO")
 })
-
 // Get all Todos
 app.get('/todos',(req,res)=>{
     res.json(todos)
 })
-
 // Find By id
 app.get('/todos/:id',(req,res)=>{
     const todo = todos.find(x=>x.id===parseInt(req.params.id));
@@ -28,9 +26,7 @@ app.get('/todos/:id',(req,res)=>{
         return res.status(404).json("❌ Todo Not found")
     res.json(todo);
 })
-
 // Update Todo
-
 app.put("/todos/:id",(req,res)=>{
     const {title} = req.body;
     const todo = todos.find(x=>x.id===parseInt(req.params.id));
@@ -41,7 +37,6 @@ app.put("/todos/:id",(req,res)=>{
     todo.title = title;
     res.status(200).json("Todo Updated");
 })
-
 // Delete todo 
 app.delete("/todos/:id",(req,res)=>{
     const todoIndex = todos.findIndex(x=>x.id===parseInt(req.params.id));
@@ -50,10 +45,6 @@ app.delete("/todos/:id",(req,res)=>{
     todos.splice(todoIndex,1);
     res.json("Todo deleted")
 })
-
-
-
-
 // create new todo 
 app.post('/todos',(req,res)=>{
     const {title,des}= req.body;
@@ -73,8 +64,7 @@ app.post('/todos',(req,res)=>{
 })
 
 
-
-
 app.listen(3000,()=>{
+    connectDb();
     console.log("✅ Service is Running on http://localhost:3000")
 })
